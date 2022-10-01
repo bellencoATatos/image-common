@@ -73,7 +73,11 @@ function setup_base_os() {
     PKGS+=" iptables build-essential byacc flex git cmake"
     PKGS+=" screen grep locales locales-all net-tools lsb-release"
     PKGS+=" openssh-client sshpass ca-certificates"
-    if [[ -z $SKIP_MPI_PKG ]]; then
+    if [[ "debian" =~ "$retlsb" ]] ; then
+	  PKGS+=" unzip"
+	fi
+	
+	if [[ -z $SKIP_MPI_PKG ]]; then
       PKGS+=" libmlx4-1 libmlx5-1 infiniband-diags perftest"
       PKGS+=" libibverbs-dev libibverbs1 librdmacm1 librdmacm-dev ibverbs-utils"
       PKGS+=" rdmacm-utils libibmad-dev libibmad5 openmpi-bin"
