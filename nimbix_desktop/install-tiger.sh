@@ -5,7 +5,9 @@ ARCH=$(arch)
 
 if [ "$ARCH" != "x86_64" ]; then
     #build_and_install_tiger
-    retlsb=$(lsb_release -i | awk '{print $3}')
+    if [ ! -f /etc/redhat-release ]; then
+        retlsb=$(lsb_release -i | awk '{print $3}')
+    fi
     shopt -s nocasematch 
     if [[ -f /etc/redhat-release ]]; then
         sudo yum -y install tigervnc-server

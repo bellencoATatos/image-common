@@ -42,7 +42,9 @@ done
 # Base OS
 function setup_base_os() {
   PKGS="curl zip unzip sudo"
+  if [ ! -f /etc/redhat-release ]; then
   retlsb=$(lsb_release -i | awk '{print $3}')
+  fi
   shopt -s nocasematch 
   if [ -f /etc/redhat-release ]; then
     # install EPEL first, successive packages live there
@@ -134,7 +136,9 @@ function setup_nimbix_desktop() {
   mkdir -p /usr/local/lib/nimbix_desktop
 
   # Copy in the VNC server installers, both for CentOS, and the XFCE files
+  if [ ! -f /etc/redhat-release ]; then
   retlsb=$(lsb_release -i | awk '{print $3}')
+  fi
   shopt -s nocasematch 
   if [[ -f /etc/redhat-release ]]; then
     files="install-centos-desktop.sh"
@@ -194,6 +198,10 @@ function setup_nimbix_desktop() {
 
 function cleanup() {
   shopt -s nocasematch   
+  if [ ! -f /etc/redhat-release ]; then
+  retlsb=$(lsb_release -i | awk '{print $3}')
+  fi
+
   if [ -f /etc/redhat-release ]; then
     yum clean all
   elif [[ ${retlsb} =~ ^(ubuntu|debian) ]]; then 
