@@ -42,6 +42,8 @@ done
 # Base OS
 function setup_base_os() {
   PKGS="curl zip unzip sudo"
+  retlsb=$(lsb_release -i | awk '{print $3}')
+  shopt -s nocasematch 
   if [ -f /etc/redhat-release ]; then
     # install EPEL first, successive packages live there
     yum -y install epel-release
@@ -61,8 +63,7 @@ function setup_base_os() {
     localedef -i en_US -f UTF-8 en_US.UTF-8
 
     echo '# leave empty' >/etc/fstab
-  else # Ubuntu (assumed)
-
+  elif [[ ${retlsb} =~ ^(ubuntu|debian) ]]; then 
     touch /etc/init.d/systemd-logind
 
     export DEBIAN_FRONTEND=noninteractive
@@ -95,6 +96,7 @@ function setup_base_os() {
       sed -ie 's/start on.*/start on filesystem/' /etc/init/ssh.conf
     fi
   fi
+  shopt -u nocasematch 
 }
 
 # Nimbix JARVICE emulation
@@ -132,12 +134,18 @@ function setup_nimbix_desktop() {
   mkdir -p /usr/local/lib/nimbix_desktop
 
   # Copy in the VNC server installers, both for CentOS, and the XFCE files
+  retlsb=$(lsb_release -i | awk '{print $3}')
+  shopt -s nocasematch 
   if [[ -f /etc/redhat-release ]]; then
     files="install-centos-desktop.sh"
     files+=" install-centos-real.sh help-real.html"
-  else
+  elif [[ "ubuntu" =~ "$retlsb" ]]; then
     files="install-ubuntu-desktop.sh"
+  elif [[ "debian" =~ "$retlsb" ]] ; then
+    files="install-debian-desktop.sh"
   fi
+  shopt -u nocasematch 
+  
   files+=" prep-tiger.sh install-tiger.sh help-tiger.html postinstall-desktop.sh"
   files+=" nimbix_desktop url.txt xfce4-session-logout share skel.config mimeapps.list helpers.rc"
 
@@ -148,15 +156,21 @@ function setup_nimbix_desktop() {
   done
 
   # Install RealVNC server on CentOS if requested, setup the desktop files
-  if [ -f /etc/redhat-release ]; then
+
+  shopt -s nocasematch 
+  if [[ -f /etc/redhat-release ]]; then
     /usr/local/lib/nimbix_desktop/install-centos-desktop.sh
 
     if [[ -n "$SETUP_REALVNC" ]]; then
       /usr/local/lib/nimbix_desktop/install-centos-real.sh
     fi
-  else
+
+  elif [[ "ubuntu" =~ "$retlsb" ]]; then
     /usr/local/lib/nimbix_desktop/install-ubuntu-desktop.sh
+  elif [[ "debian" =~ "$retlsb" ]] ; then
+    /usr/local/lib/nimbix_desktop/install-debian-desktop.sh
   fi
+  shopt -u nocasematch 
 
   if [[ $ARCH == x86_64 ]]; then
     /usr/local/lib/nimbix_desktop/prep-tiger.sh
@@ -179,11 +193,13 @@ function setup_nimbix_desktop() {
 }
 
 function cleanup() {
+  shopt -s nocasematch   
   if [ -f /etc/redhat-release ]; then
     yum clean all
-  else # Ubuntu
+  elif [[ ${retlsb} =~ ^(ubuntu|debian) ]]; then 
     apt-get clean
   fi
+  shopt -u nocasematch   
   rm -rf /tmp/image-common-$BRANCH
 }
 

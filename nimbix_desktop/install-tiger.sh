@@ -5,12 +5,15 @@ ARCH=$(arch)
 
 if [ "$ARCH" != "x86_64" ]; then
     #build_and_install_tiger
+    retlsb=$(lsb_release -i | awk '{print $3}')
+    shopt -s nocasematch 
     if [[ -f /etc/redhat-release ]]; then
         sudo yum -y install tigervnc-server
-    else
+    elif [[ ${retlsb} =~ ^(ubuntu|debian) ]]; then 
         sudo apt-get -y update
         sudo apt-get -y install tigervnc-standalone-server
     fi
+    shopt -u nocasematch 	
 else
     # Install the cached tarball
     sudo tar -C / -xzf  /usr/local/lib/nimbix_desktop/tigervnc-$VERSION.$ARCH.tar.gz --strip-components=1
