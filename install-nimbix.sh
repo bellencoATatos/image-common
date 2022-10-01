@@ -72,7 +72,7 @@ function setup_base_os() {
     PKGS+=" kmod xz-utils vim openssh-server libpam-systemd iputils-ping python3"
     PKGS+=" iptables build-essential byacc flex git cmake"
     PKGS+=" screen grep locales locales-all net-tools lsb-release"
-    PKGS+=" openssh-client sshpass ca-certificates"
+    PKGS+=" openssh-client sshpass ca-certificates unzip"
     if [[ "debian" =~ "$retlsb" ]] ; then
 	  PKGS+=" unzip"
 	fi
