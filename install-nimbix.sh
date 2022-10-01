@@ -43,7 +43,9 @@ done
 function setup_base_os() {
   PKGS="curl zip unzip sudo"
   if [ ! -f /etc/redhat-release ]; then
-  retlsb=$(lsb_release -i | awk '{print $3}')
+    apt-get -y update
+    apt-get -y install lsb-release
+    retlsb=$(lsb_release -i | awk '{print $3}')
   fi
   shopt -s nocasematch 
   if [ -f /etc/redhat-release ]; then
@@ -72,11 +74,8 @@ function setup_base_os() {
     PKGS+=" kmod xz-utils vim openssh-server libpam-systemd iputils-ping python3"
     PKGS+=" iptables build-essential byacc flex git cmake"
     PKGS+=" screen grep locales locales-all net-tools lsb-release"
-    PKGS+=" openssh-client sshpass ca-certificates unzip"
-    if [[ "debian" =~ "$retlsb" ]] ; then
-	  PKGS+=" unzip"
-	fi
-	
+    PKGS+=" openssh-client sshpass ca-certificates"
+    	
 	if [[ -z $SKIP_MPI_PKG ]]; then
       PKGS+=" libmlx4-1 libmlx5-1 infiniband-diags perftest"
       PKGS+=" libibverbs-dev libibverbs1 librdmacm1 librdmacm-dev ibverbs-utils"
@@ -91,7 +90,7 @@ function setup_base_os() {
     # unfortunately on Ubuntu we can't skip the apt-get update since
     # most images have broken cache, so we have to do it anyway
     #(was [ -z "$SKIP_OS_PKG_UPDATE" ] && apt-get -y update)
-    apt-get -y update
+    #apt-get -y update
     # XXX ^^^
     apt-get -y install $PKGS
 
