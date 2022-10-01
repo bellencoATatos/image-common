@@ -175,7 +175,7 @@ function setup_nimbix_desktop() {
   elif [[ "ubuntu" =~ "$retlsb" ]]; then
     /usr/local/lib/nimbix_desktop/install-ubuntu-desktop.sh
   elif [[ "debian" =~ "$retlsb" ]] ; then
-    /usr/local/lib/nimbix_desktop/install-debian-desktop.sh
+    sh /usr/local/lib/nimbix_desktop/install-debian-desktop.sh
   fi
   shopt -u nocasematch 
 
