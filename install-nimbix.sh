@@ -41,7 +41,7 @@ done
 
 # Base OS
 function setup_base_os() {
-  PKGS="curl zip unzip sudo"
+  PKGS="curl zip unzip sudo wget"
   if [ ! -f /etc/redhat-release ]; then
     apt-get -y update
     apt-get -y install lsb-release
