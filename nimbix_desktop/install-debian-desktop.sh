@@ -10,23 +10,12 @@ dirname=$(dirname $0)
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get -y update
-
-apt-get -y install wget gnome-icon-theme software-properties-common \
-    humanity-icon-theme tango-icon-theme xfce4 xfce4-terminal \
-    fonts-freefont-ttf xfonts-base xfonts-100dpi xfonts-75dpi x11-apps \
-    xfonts-scalable xauth firefox-esr ristretto mesa-utils init-system-helpers \
-    libxcb1 libxcb-keysyms1 libxcb-util1 librtmp1 python3-numpy \
-    gir1.2-gtk-3.0
+apt -y install task-xfce-desktop
+apt-get -y install wget
 
 if [[ "$ARCH" != "x86_64" ]]; then
     echo "non-x86_64 has no VirtualGL"
 else
-
-    # Fix newer installs that put binary in /usr/libexec
-#    if [[ -x /usr/libexec/vncserver ]]; then
-#      ln -sf /usr/libexec/vncserver /usr/bin/vncserver
-#    fi
-
     cd /tmp
     wget --content-disposition "$VGL64"
     dpkg --install virtualgl*.deb || apt-get -f install
